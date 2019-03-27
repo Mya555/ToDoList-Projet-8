@@ -7,6 +7,7 @@ use AppBundle\Form\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserController extends Controller
 {
@@ -49,6 +50,11 @@ class UserController extends Controller
      */
     public function editAction(User $user, Request $request)
     {
+        // On vérifie que l'utilisateur dispose bien du rôle ROLE_ADMIN
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            // Sinon on déclenche une exception « Accès interdit »
+            throw new AccessDeniedException('Votre profil ne vous permet pas d\'accéder à la page.');
+        }
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
