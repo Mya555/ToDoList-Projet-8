@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
+use AppBundle\Entity\User;
 use AppBundle\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TaskController extends Controller
 {
+    private $tokenStorage;
+
+
     /**
      * @Route("/tasks", name="task_list")
      */
@@ -25,12 +29,11 @@ class TaskController extends Controller
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
+            $task->setUsers($this->getUser());
             $em->persist($task);
             $em->flush();
 

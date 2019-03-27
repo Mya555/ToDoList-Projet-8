@@ -44,6 +44,28 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="user")
+     */
+    private $tasks;
+
+    /**
+     * @return mixed
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * @param mixed $tasks
+     */
+    public function setTasks($tasks)
+    {
+        $this->tasks = $tasks;
+    }
+
+
 
     /**
      * @return mixed
