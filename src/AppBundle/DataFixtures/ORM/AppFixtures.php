@@ -26,8 +26,8 @@ class AppFixtures extends Fixture
     /**
      * @param ObjectManager $manager
      */
-    public function load(ObjectManager $manager)
-    {
+    public function load(ObjectManager $manager){
+
         // Create user with role ROLE_ADMIN
         $user_admin = new User();
         $user_admin->setUsername( 'admin' );
