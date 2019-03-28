@@ -11,16 +11,22 @@ namespace AppBundle\DataFixtures\ORM;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Task;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AppFixtures extends Fixture
+class AppFixtures implements FixtureInterface, ContainerAwareInterface
 {
-    private $encoder;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(UserPasswordEncoderInterface $encoder)
+    public function setContainer(ContainerInterface $container = null)
     {
-        $this->encoder = $encoder;
+        $this->container = $container;
     }
 
     /**
@@ -31,17 +37,17 @@ class AppFixtures extends Fixture
         // Create user with role ROLE_ADMIN
         $user_admin = new User();
         $user_admin->setUsername( 'admin' );
-        $user_admin->setPassword($this->encoder->encodePassword($user_admin, 'password' ));
+        $user_admin->setPassword($this->container->get('security.password_encoder')->encodePassword($user_admin, 'password' ));
         $user_admin->setEmail( 'admin@mail.fr' );
-        $user_admin->setRoles( 'ROLE_ADMIN' );
+        $user_admin->setRoles( array('ROLE_ADMIN') );
         $manager->persist( $user_admin );
 
         // Create user with role ROLE_USER
         $user_user = new User();
         $user_user->setUsername( 'user' );
-        $user_user->setPassword($this->encoder->encodePassword($user_user, 'password' ) );
+        $user_user->setPassword($this->container->get('security.password_encoder')->encodePassword($user_user, 'password' ) );
         $user_user->setEmail( 'user@mail.fr' );
-        $user_user->setRoles( 'ROLE_USER' );
+        $user_user->setRoles( array('ROLE_USER') );
         $manager->persist( $user_user );
 
 
