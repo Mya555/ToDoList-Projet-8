@@ -51,10 +51,8 @@ class UserController extends Controller
     public function editAction(User $user, Request $request)
     {
         // On vérifie que l'utilisateur dispose bien du rôle ROLE_ADMIN
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            // Sinon on déclenche une exception « Accès interdit »
-            throw new AccessDeniedException('Votre profil ne vous permet pas d\'accéder à la page.');
-        }
+        $this->deniedUnlessGranted('ROLE_ADMIN');
+          
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
