@@ -101,7 +101,7 @@ class Task
     /**
      * @return mixed
      */
-    public function getUsers()
+    public function getUser()
     {
         return $this->users;
     }
@@ -109,7 +109,7 @@ class Task
     /**
      * @param mixed $users
      */
-    public function setUsers($users)
+    public function setUser($users)
     {
         $this->users = $users;
     }
