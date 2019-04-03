@@ -90,6 +90,7 @@ class TaskController extends Controller
     public function deleteTaskAction(Task $task)
     {
         if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme' )) {
+
             $em = $this->getDoctrine()->getManager();
             $em->remove( $task );
             $em->flush();
