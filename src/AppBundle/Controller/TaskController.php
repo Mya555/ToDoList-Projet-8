@@ -8,6 +8,7 @@ use AppBundle\Form\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class TaskController extends Controller
 {
@@ -19,7 +20,7 @@ class TaskController extends Controller
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render( 'task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository( 'AppBundle:Task' )->findAll()] );
     }
 
     /**
@@ -28,21 +29,21 @@ class TaskController extends Controller
     public function createAction(Request $request)
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+        $form = $this->createForm( TaskType::class, $task );
+        $form->handleRequest( $request );
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $task->setUsers($this->getUser());
-            $em->persist($task);
+            $task->setUser( $this->getUser() );
+            $em->persist( $task );
             $em->flush();
 
-            $this->addFlash('success', 'La tâche a été bien été ajoutée.');
+            $this->addFlash( 'success', 'La tâche a été bien été ajoutée.' );
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute( 'task_list' );
         }
 
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
+        return $this->render( 'task/create.html.twig', ['form' => $form->createView()] );
     }
 
     /**
@@ -50,22 +51,22 @@ class TaskController extends Controller
      */
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm( TaskType::class, $task );
 
-        $form->handleRequest($request);
+        $form->handleRequest( $request );
 
         if ($form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
+            $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute( 'task_list' );
         }
 
-        return $this->render('task/edit.html.twig', [
+        return $this->render( 'task/edit.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
-        ]);
+        ] );
     }
 
     /**
@@ -73,25 +74,34 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
+        $task->toggle( !$task->isDone() );
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute( 'task_list' );
     }
 
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
+     * @param Task $task
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
+        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme')) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove( $task );
+            $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+            $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
 
-        return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute( 'task_list' );
+
+        } else {
+            $this->addFlash( 'error', 'Vous n\'avez pas le droit d\'effectuer cette suppression' );
+            return $this->redirectToRoute( 'task_list' );
+        }
+
     }
 }
