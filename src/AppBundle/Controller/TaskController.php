@@ -34,7 +34,7 @@ class TaskController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $task->setUsers( $this->getUser() );
+            $task->setUser( $this->getUser() );
             $em->persist( $task );
             $em->flush();
 
@@ -89,7 +89,8 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        if ($this->getUser() === $task->getUsers() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUsers() === null)) {
+        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme' )) {
+
             $em = $this->getDoctrine()->getManager();
             $em->remove( $task );
             $em->flush();

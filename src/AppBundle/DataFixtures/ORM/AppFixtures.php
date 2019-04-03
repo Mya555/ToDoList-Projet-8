@@ -50,6 +50,14 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         $user_user->setRoles( array('ROLE_USER') );
         $manager->persist( $user_user );
 
+        // Create user with role ROLE_USER
+        $user_anonyme = new User();
+        $user_anonyme->setUsername( 'anonyme' );
+        $user_anonyme->setPassword($this->container->get('security.password_encoder')->encodePassword($user_user, 'password' ) );
+        $user_anonyme->setEmail( 'anonyme@mail.fr' );
+        $user_anonyme->setRoles( array('ANONYME') );
+        $manager->persist( $user_anonyme );
+
 
         // 5 tasks without a user
         for ($i = 0; $i < 5; $i++) {
@@ -60,6 +68,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 croissant chocolate sugar plum. 
                 Danish sugar plum carrot cake chocolate bar chocolate bar carrot cake. 
                 I love macaroon pudding topping jelly cookie soufflé.' );
+            $task->setUsers($user_anonyme );
             $manager->persist( $task );
         }
         // 5 tasks attached to a user with ROLE_USER
