@@ -50,7 +50,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         $user_user->setRoles( array('ROLE_USER') );
         $manager->persist( $user_user );
 
-        // Create user with role ROLE_USER
+        // Create user with role ANONYME
         $user_anonyme = new User();
         $user_anonyme->setUsername( 'anonyme' );
         $user_anonyme->setPassword($this->container->get('security.password_encoder')->encodePassword($user_user, 'password' ) );
@@ -62,13 +62,13 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         // 5 tasks without a user
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
-            $task->setTitle( 'Task with User is null n° ' . $i );
+            $task->setTitle( 'Task with User ANONYME n° ' . $i );
             $task->setContent( '
                 Icing liquorice liquorice I love chocolate cake tart
                 croissant chocolate sugar plum. 
                 Danish sugar plum carrot cake chocolate bar chocolate bar carrot cake. 
                 I love macaroon pudding topping jelly cookie soufflé.' );
-            $task->setUsers($user_anonyme );
+            $task->setUser($user_anonyme );
             $manager->persist( $task );
         }
         // 5 tasks attached to a user with ROLE_USER
@@ -80,7 +80,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 I love sweet pudding ice cream topping oat cake sweet marzipan.
                 Donut marshmallow donut dragée chocolate cake cake. Powder 
                 chocolate cake apple pie chupa chups biscuit I love chocolate cake.' );
-            $task->setUsers( $user_user );
+            $task->setUser( $user_user );
             $manager->persist( $task );
         }
         // 5 tasks attached to a user with ROLE_ADMIN
@@ -91,7 +91,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 pple pie bonbon marshmallow chupa chups liquorice sesame snaps 
                 I love pudding icing. Caramels danish brownie lemon drops icing. 
                 Caramels I love liquorice caramels tart. Topping carrot cake danish tart.' );
-            $task->setUsers( $user_admin );
+            $task->setUser( $user_admin );
             $manager->persist( $task );
         }
 
