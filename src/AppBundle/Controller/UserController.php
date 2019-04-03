@@ -51,7 +51,7 @@ class UserController extends Controller
     public function editAction(User $user, Request $request)
     {
         // On vérifie que l'utilisateur dispose bien du rôle ROLE_ADMIN
-        $this->deniedUnlessGranted('ROLE_ADMIN');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
           
         $form = $this->createForm(UserType::class, $user);
 
