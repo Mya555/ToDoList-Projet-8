@@ -11,6 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
 {
+    public function testShowTaskListPage()
+    {
+        $client = static::createClient();
+        $client->request( 'GET', '/tasks' );
 
+        $this->assertEquals( 200, $client->getResponse()->getStatusCode() );
+    }
 
 }
