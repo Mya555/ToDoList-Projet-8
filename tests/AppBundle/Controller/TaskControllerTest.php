@@ -19,4 +19,20 @@ class TaskControllerTest extends WebTestCase
         $this->assertEquals( 200, $client->getResponse()->getStatusCode() );
     }
 
+    public function testDeleteTask(){
+        $client = static::createClient([], ['PHP_AUTH_USER'=>'admin', 'PHP_AUTH_PW'=>'password']);
+        $client->request('DELETE', '/tasks/{id}/delete');
+        $crawler = $client->request(
+            'DELETE',
+            '/tasks/98/delete',
+            [],
+            [],
+            ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password']
+        );
+        $this->assertFalse($client->getResponse()->isRedirect());
+    }
+
+
+
+
 }
