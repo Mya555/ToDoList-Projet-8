@@ -11,11 +11,56 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
+
     public function testShowUserListPage()
     {
         $client = static::createClient();
-        $client->request( 'GET', '/users' );
+        $crawler = $client->request( 'GET', '/users' );
 
         $this->assertEquals( 200, $client->getResponse()->getStatusCode() );
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Liste des utilisateurs")')->count()
+        );
     }
+/*
+    public function testCreateUser(){
+        $client = static::createClient(array(), array('PHP_AUTH_USER'=>'admin', 'PHP_AUTH_PW'=>'password'));
+        $crawler = $client->request('GET', '/users/create');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('Créer un utilisateur', $client->getResponse()->getContent());
+
+        $form = $crawler->selectButton('Ajouter')->form();
+
+        $form['user[username]'] = 'test_user';
+        $form['user[password][first]'] = 'password';
+        $form['user[password][second]'] = 'password';
+        $form['user[email]'] = 'test@mail.com';
+        $form['user[roles]'] = 'ROLE_ADMIN';
+        $client->submit($form);
+
+        $crawler = $client->followRedirect();
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'L\'utilisateur a bien été ajouté.');
+        $this->assertContains('Liste des utilisateurs', $client->getResponse()->getContent());
+
+    }
+
+    public function testEditUser(){
+        $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
+        $crawler = $client->request( 'GET', '/users/38/edit' );
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form['user[username]'] = 'test_user';
+        $form['user[password][first]'] = 'password';
+        $form['user[password][second]'] = 'password';
+        $form['user[email]'] = 'test@mail.com';
+        $form['user[roles]'] = 'ROLE_ADMIN';
+        $client->submit($form);
+
+        $crawler = $client->followRedirect();
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'L\'utilisateur a bien été modifié');
+        $this->assertContains('Liste des utilisateurs', $client->getResponse()->getContent());
+
+    }*/
+
 }

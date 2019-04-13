@@ -32,7 +32,7 @@ class TaskController extends Controller
         $form = $this->createForm( TaskType::class, $task );
         $form->handleRequest( $request );
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() &&  $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $task->setUser( $this->getUser() );
             $em->persist( $task );
@@ -55,7 +55,7 @@ class TaskController extends Controller
 
         $form->handleRequest( $request );
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
@@ -74,8 +74,7 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle( !$task->isDone() );
-        $this->getDoctrine()->getManager()->flush();
+        $this->get('app.taskManager')->toggleTask();
 
         $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
 
