@@ -6,24 +6,36 @@
  * Time: 14:32
  */
 
-namespace AppBundle\Manager;
+namespace AppBundle\Service;
 
 use AppBundle\Entity\Task;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
+
 
 class TaskManager
 {
     private $entityManager;
+
     /**
-     * TaskManager constructor.
-     * @param EntityManagerInterface $manager
+     * @param EntityManager $manager
      */
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(EntityManager $manager)
     {
         $this->entityManager = $manager;
     }
-    public function toggleTask(Task $task){
+
+    public function toggleTask($task)
+    {
         $task->toggle( !$task->isDone() );
         $this->entityManager->flush();
     }
+
+    public function addTask(Request $request)
+    {
+
+
+
+    }
+
 }

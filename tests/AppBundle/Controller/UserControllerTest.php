@@ -23,7 +23,7 @@ class UserControllerTest extends WebTestCase
             $crawler->filter('html:contains("Liste des utilisateurs")')->count()
         );
     }
-/*
+
     public function testCreateUser(){
         $client = static::createClient(array(), array('PHP_AUTH_USER'=>'admin', 'PHP_AUTH_PW'=>'password'));
         $crawler = $client->request('GET', '/users/create');
@@ -61,6 +61,6 @@ class UserControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isSuccessful(), 'L\'utilisateur a bien été modifié');
         $this->assertContains('Liste des utilisateurs', $client->getResponse()->getContent());
 
-    }*/
+    }
 
 }

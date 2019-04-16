@@ -5,9 +5,12 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Form\TaskType;
+use AppBundle\Service\TaskManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class TaskController extends Controller
@@ -25,29 +28,31 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/create", name="task_create")
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function createAction(Request $request)
     {
         $task = new Task();
         $form = $this->createForm( TaskType::class, $task );
         $form->handleRequest( $request );
-
-        if ($form->isSubmitted() &&  $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $task->setUser( $this->getUser() );
             $em->persist( $task );
             $em->flush();
-
             $this->addFlash( 'success', 'La tâche a été bien été ajoutée.' );
-
             return $this->redirectToRoute( 'task_list' );
         }
-
         return $this->render( 'task/create.html.twig', ['form' => $form->createView()] );
     }
 
+
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
+     * @param Task $task
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function editAction(Task $task, Request $request)
     {
@@ -71,10 +76,13 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @param Task $task
+     * @param TaskManager $taskManager
+     * @return RedirectResponse
      */
-    public function toggleTaskAction(Task $task)
+    public function toggleTaskAction(Task $task, TaskManager $taskManager)
     {
-        $this->get('app.taskManager')->toggleTask();
+        $taskManager->toggleTask($task);
 
         $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
 
@@ -84,7 +92,7 @@ class TaskController extends Controller
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
      * @param Task $task
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function deleteTaskAction(Task $task)
     {

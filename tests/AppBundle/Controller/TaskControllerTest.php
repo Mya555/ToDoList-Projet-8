@@ -8,6 +8,7 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
@@ -24,8 +25,9 @@ class TaskControllerTest extends WebTestCase
     }
 
     public function testEditTask(){
+
         $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
-        $crawler = $client->request( 'GET', '/tasks/182/edit' );
+        $crawler = $client->request( 'GET', '/tasks/236/edit' );
 
         $form = $crawler->selectButton('Modifier')->form();
         $form['task[title]'] = 'content_edit';
