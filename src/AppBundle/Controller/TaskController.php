@@ -77,12 +77,13 @@ class TaskController extends Controller
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      * @param Task $task
-     * @param TaskManager $taskManager
      * @return RedirectResponse
      */
-    public function toggleTaskAction(Task $task, TaskManager $taskManager)
+    public function toggleTaskAction(Task $task)
     {
+        $taskManager = $this->get('app.task_manager');
         $taskManager->toggleTask($task);
+
 
         $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
 

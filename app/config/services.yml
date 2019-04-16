@@ -8,9 +8,9 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: false
+        public: true
 
-    app.task_toggle:
+    app.task_manager:
             class: AppBundle\Service\TaskManager
             arguments: ['@doctrine.orm.entity_manager']
 
