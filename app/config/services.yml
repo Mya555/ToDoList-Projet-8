@@ -14,3 +14,5 @@ services:
             class: AppBundle\Service\TaskManager
             arguments: ['@doctrine.orm.entity_manager']
 
+    app.user_manager:
+            class: AppBundle\Service\UserManager
