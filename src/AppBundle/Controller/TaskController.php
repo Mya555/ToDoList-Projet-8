@@ -26,6 +26,17 @@ class TaskController extends Controller
         return $this->render( 'task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository( 'AppBundle:Task' )->findAll()] );
     }
 
+
+    /**
+     * @Route("/tasks/done", name="is_done_task")
+     */
+    public function IsDoneTask()
+    {
+        return $this->render( 'task/isDoneTask.html.twig', ['tasks' => $this->getDoctrine()->getRepository( 'AppBundle:Task' )->findAll()] );
+    }
+
+
+
     /**
      * @Route("/tasks/create", name="task_create")
      * @param Request $request
