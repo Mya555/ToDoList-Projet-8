@@ -24,19 +24,6 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    public function testEditTask(){
-
-        $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
-        $crawler = $client->request( 'GET', '/tasks/236/edit' );
-
-        $form = $crawler->selectButton('Modifier')->form();
-        $form['task[title]'] = 'content_edit';
-        $form['task[content]'] = 'content_edit';
-        $client->submit($form);
-
-        $crawler = $client->followRedirect();
-        $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a bien été modifiée.');
-    }
 
     public function testCreateTask()
     {
@@ -48,8 +35,8 @@ class TaskControllerTest extends WebTestCase
         $this->assertSame(1, $crawler->selectLink("Retour à la liste des tâches")->count());
 
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['task[title]'] = 'title';
-        $form['task[content]'] = 'content';
+        $form['task[title]'] = 'title1';
+        $form['task[content]'] = 'content1';
         $client->submit($form);
 
         $crawler = $client->followRedirect();
@@ -58,23 +45,40 @@ class TaskControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a été bien été ajoutée.');
 
     }
+    public function testEditDeleteTask(){
 
-
-   /* public function testDeleteTask()
-    {
         $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
-        $client->request( 'DELETE', '/tasks/{id}/delete' );
-        $crawler = $client->request(
-            'DELETE',
-            '/tasks/184/delete',
-            [],
-            [],
-            ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password']
-        );
+
+        // EDIT TASK
+
+        $crawler = $client->request('GET', '/tasks');
+        $link = $crawler->selectLink('Task with User ANONYME n° 1')->link();
+        $crawler = $client->click($link);
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->selectButton("Modifier")->count());
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form['task[title]'] = 'content_edit';
+        $form['task[content]'] = 'content_edit';
+        $client->submit($form);
+
+        $crawler = $client->followRedirect();
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a bien été modifiée.');
+
+        // DELETE TASK
+
+        $form = $crawler->selectButton('Supprimer')->last()->form();
+        $client->submit($form);
+
         $crawler = $client->followRedirect();
         $this->assertEquals(200, $client->getResponse()->getStatusCode() );
         $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a bien été supprimée.');
 
+
+
     }
-*/
+
+
+
 }

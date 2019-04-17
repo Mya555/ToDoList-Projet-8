@@ -47,13 +47,16 @@ class UserControllerTest extends WebTestCase
 
     public function testEditUser(){
         $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
-        $crawler = $client->request( 'GET', '/users/38/edit' );
+
+        $crawler = $client->request('GET', '/users');
+        $link = $crawler->selectLink('Edit')->last()->link();
+        $crawler = $client->click($link);
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form['user[username]'] = 'test_user';
+        $form['user[username]'] = 'test_user_modif';
         $form['user[password][first]'] = 'password';
         $form['user[password][second]'] = 'password';
-        $form['user[email]'] = 'test@mail.com';
+        $form['user[email]'] = 'test_user_modif@mail.com';
         $form['user[roles]'] = 'ROLE_ADMIN';
         $client->submit($form);
 
