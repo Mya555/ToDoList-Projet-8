@@ -12,6 +12,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserManager
 {
 
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoderPass) {
+        $this->passwordEncoder = $encoderPass;
+    }
+
     public function createUser($user)
     {
         $em = $this->getDoctrine()->getManager();
@@ -22,9 +28,9 @@ class UserManager
         $em->flush();
     }
 
-    public function encryptPass($user,  UserPasswordEncoderInterface $encoderPass)
+    public function encryptPass($user)
     {
-        $password = $this->encoderPass->encodePassword( $user, $user->getPassword() );
+        $password = $this->passwordEncoder->encodePassword( $user, $user->getPassword() );
         return $password;
     }
 }
