@@ -16,4 +16,3 @@ services:
 
     app.user_manager:
             class: AppBundle\Service\UserManager
-            arguments: ['@security.password_encoder']
