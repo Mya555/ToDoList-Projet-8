@@ -29,11 +29,8 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $password = $this->get('app.user_manager')->encryptPass($user);
-            $user->setPassword($password);
-            $em->persist($user);
-            $em->flush();
+
+            $this->get('app.user_manager')->createUser($user);
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
