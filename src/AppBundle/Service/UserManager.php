@@ -7,6 +7,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserManager
 {
@@ -21,9 +22,9 @@ class UserManager
         $em->flush();
     }
 
-    public function encryptPass($user)
+    public function encryptPass($user,  UserPasswordEncoderInterface $encoderPass)
     {
-        $password = $this->get( 'security.password_encoder' )->encodePassword( $user, $user->getPassword() );
+        $password = $this->encoderPass->encodePassword( $user, $user->getPassword() );
         return $password;
     }
 }
