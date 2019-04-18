@@ -11,26 +11,37 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserManager
 {
-
+    private $entityManager;
     private $passwordEncoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoderPass) {
+    public function __construct(EntityManager $manager, UserPasswordEncoderInterface $encoderPass)
+    {
         $this->passwordEncoder = $encoderPass;
+        $this->entityManager = $manager;
     }
 
     public function createUser($user)
     {
-        $em = $this->getDoctrine()->getManager();
+
         $password = $this->encryptPass( $user );
         $user->setPassword( $password );
-
-        $em->persist( $user );
-        $em->flush();
+        $this->entityManager->persist( $user )->flush();
     }
 
     public function encryptPass($user)
     {
         $password = $this->passwordEncoder->encodePassword( $user, $user->getPassword() );
         return $password;
+    }
+
+    public function editUser($user)
+    {
+        $password = $this->encryptPass( $user );
+        $user->setPassword($password);
+
+        $this->entityManager->flush();
+
+        $this->addFlash('success', "L'utilisateur a bien été modifié");
+
     }
 }

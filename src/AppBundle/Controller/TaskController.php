@@ -48,11 +48,9 @@ class TaskController extends Controller
         $form = $this->createForm( TaskType::class, $task );
         $form->handleRequest( $request );
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $task->setUser( $this->getUser() );
-            $em->persist( $task );
-            $em->flush();
-            $this->addFlash( 'success', 'La tâche a été bien été ajoutée.' );
+
+            $this->get('app.task_manager')->addTask($task);
+
             return $this->redirectToRoute( 'task_list' );
         }
         return $this->render( 'task/create.html.twig', ['form' => $form->createView()] );
@@ -72,9 +70,8 @@ class TaskController extends Controller
         $form->handleRequest( $request );
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
+           $this->get('app.task_manager')->editTask();
 
             return $this->redirectToRoute( 'task_list' );
         }
@@ -110,11 +107,7 @@ class TaskController extends Controller
     {
         if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme' )) {
 
-            $em = $this->getDoctrine()->getManager();
-            $em->remove( $task );
-            $em->flush();
-
-            $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
+           $this->get('app.task_manager')->deleteTask($task);
 
             return $this->redirectToRoute( 'task_list' );
 

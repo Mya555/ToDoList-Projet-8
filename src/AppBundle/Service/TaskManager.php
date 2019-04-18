@@ -31,11 +31,24 @@ class TaskManager
         $this->entityManager->flush();
     }
 
-    public function addTask(Request $request)
+    public function addTask($task)
     {
-
-
-
+        $task->setUser( $this->getUser() );
+        $this->entityManager->persist( $task )->flush();
+        $this->addFlash( 'success', 'La tâche a été bien été ajoutée.' );
     }
 
+    public function editTask()
+    {
+        $this->entityManager->flush();
+        $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
+    }
+
+    public function deleteTask($task){
+
+        $this->entityManager->remove($task)->flush();
+
+        $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
+
+    }
 }

@@ -53,12 +53,8 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
 
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', "L'utilisateur a bien été modifié");
+           $this->get('app.user_manager')->editUser($user);
 
             return $this->redirectToRoute('user_list');
         }
