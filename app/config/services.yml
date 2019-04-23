@@ -12,8 +12,8 @@ services:
 
     app.task_manager:
             class: AppBundle\Service\TaskManager
-            arguments: ['@doctrine.orm.entity_manager']
+            arguments: ['@doctrine.orm.entity_manager', '@session']
 
     app.user_manager:
             class: AppBundle\Service\UserManager
-            arguments: ['@security.password_encoder', '@doctrine.orm.entity_manager']
+            arguments: [ '@doctrine.orm.entity_manager','@security.password_encoder', '@session']

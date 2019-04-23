@@ -49,7 +49,7 @@ class TaskController extends Controller
         $form->handleRequest( $request );
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->get('app.task_manager')->addTask($task);
+            $this->get('app.task_manager')->addTask($task, $this->getUser());
 
             return $this->redirectToRoute( 'task_list' );
         }
