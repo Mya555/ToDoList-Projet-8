@@ -51,7 +51,7 @@ class TaskManager
     public function editTask()
     {
         $this->entityManager->flush();
-        $this->session->getFlashBag()->add( 'success', 'La tâche a bien été modifiée.' );
+        $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
     }
 
     public function deleteTask($task)
@@ -60,7 +60,7 @@ class TaskManager
         $this->entityManager->remove( $task );
         $this->entityManager->flush();
 
-        $this->session->getFlashBag()->add( 'success', 'La tâche a bien été supprimée.' );
+        $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
 
     }
 }
