@@ -12,7 +12,8 @@ use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 
 class TaskManager
 {
@@ -20,10 +21,11 @@ class TaskManager
     private $session;
 
     /**
+     * TaskManager constructor.
      * @param EntityManager $manager
-     * @param SessionInterface $session
+     * @param Session $session
      */
-    public function __construct(EntityManager $manager, SessionInterface $session)
+    public function __construct(EntityManager $manager, Session $session)
     {
         $this->session = $session;
         $this->entityManager = $manager;
@@ -31,7 +33,7 @@ class TaskManager
 
     private function addFlash($key, $message)
     {
-        $this->session->getFlashBag()->add( $key, $message );
+        $this->session->getFlashBag( $key, $message );
     }
 
     public function toggleTask($task)

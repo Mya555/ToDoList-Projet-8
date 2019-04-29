@@ -8,7 +8,7 @@ use AppBundle\Form\UserType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserManager
 {
@@ -16,7 +16,7 @@ class UserManager
     private $passwordEncoder;
     private $session;
 
-    public function __construct(EntityManager $manager, UserPasswordEncoderInterface $encoderPass, SessionInterface $session)
+    public function __construct(EntityManager $manager, UserPasswordEncoderInterface $encoderPass, Session $session)
     {
         $this->passwordEncoder = $encoderPass;
         $this->entityManager = $manager;
@@ -45,7 +45,7 @@ class UserManager
 
         $this->entityManager->flush();
 
-        $this->session->getFlashBag()->add('success', "L'utilisateur a bien été modifié");
+        $this->session->getFlashBag('success', "L'utilisateur a bien été modifié");
 
     }
 }
