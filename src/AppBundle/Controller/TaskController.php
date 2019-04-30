@@ -36,7 +36,6 @@ class TaskController extends Controller
     }
 
 
-
     /**
      * @Route("/tasks/create", name="task_create")
      * @param Request $request
@@ -47,10 +46,13 @@ class TaskController extends Controller
         $task = new Task();
         $form = $this->createForm( TaskType::class, $task );
         $form->handleRequest( $request );
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $this->get('app.task_manager')->addTask($task, $this->getUser());
-
+        if ($this->getUser() == !null) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->get( 'app.task_manager' )->addTask( $task, $this->getUser() );
+                return $this->redirectToRoute( 'task_list' );
+            }
+        } else {
+            $this->addFlash( 'error', 'Connectez vous pour pouvoir créer une tâche.' );
             return $this->redirectToRoute( 'task_list' );
         }
         return $this->render( 'task/create.html.twig', ['form' => $form->createView()] );
@@ -71,7 +73,7 @@ class TaskController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-           $this->get('app.task_manager')->editTask();
+            $this->get( 'app.task_manager' )->editTask();
 
             return $this->redirectToRoute( 'task_list' );
         }
@@ -89,8 +91,8 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $taskManager = $this->get('app.task_manager');
-        $taskManager->toggleTask($task);
+        $taskManager = $this->get( 'app.task_manager' );
+        $taskManager->toggleTask( $task );
 
 
         $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
@@ -105,9 +107,9 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme' )) {
+        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme')) {
 
-           $this->get('app.task_manager')->deleteTask($task);
+            $this->get( 'app.task_manager' )->deleteTask( $task );
 
             return $this->redirectToRoute( 'task_list' );
 
