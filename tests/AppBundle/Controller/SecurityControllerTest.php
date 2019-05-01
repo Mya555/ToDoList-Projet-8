@@ -7,12 +7,20 @@
  */
 
 namespace Tests\AppBundle\Controller;
+use AppBundle\Controller\SecurityController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 
 class SecurityControllerTest extends WebTestCase
 {
+    protected $controller;
+
+    public function setUp()
+    {
+        $this->controller = new SecurityController();
+    }
+
 
     public function testLoginPage()
     {
@@ -26,4 +34,17 @@ class SecurityControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Todo List', $client->getResponse()->getContent());
     }
+
+
+    public function testLoginCheck()
+    {
+        $check = $this->controller->loginCheck();
+        self::assertNull($check);
+    }
+    public function testLogout()
+    {
+        $check = $this->controller->logoutCheck();
+        self::assertNull($check);
+    }
+
 }
