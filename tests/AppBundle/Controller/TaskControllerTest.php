@@ -13,11 +13,30 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
 {
+    public function testIsDoneTask(){
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/tasks/done');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Liste des tâches términées")')->count()
+        );
+    }
 
     public function testShowTaskList(){
         $client = static::createClient();
         $crawler = $client->request('GET', '/tasks');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Task")')->count()
+        );
+    }
+
+    public function testToggleTaskAction()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/tasks/{id}/toggle');
         $this->assertGreaterThan(
             0,
             $crawler->filter('html:contains("Task")')->count()
@@ -45,6 +64,19 @@ class TaskControllerTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a été bien été ajoutée.');
 
     }
+
+    public function testToggleTask()
+    {
+        $client = static::createClient(array(), array('PHP_AUTH_USER'=>'admin', 'PHP_AUTH_PW'=>'password'));
+        $crawler = $client->request('GET', '/tasks');
+        $form = $crawler->selectButton('Marquer comme faite')->last()->form();
+        $client->submit($form);
+
+        $crawler = $client->followRedirect();
+        $this->assertEquals(200, $client->getResponse()->getStatusCode() );
+        $this->assertTrue($client->getResponse()->isSuccessful(), 'La tâche %s a bien été marquée comme faite.');
+    }
+
     public function testEditDeleteTask(){
 
         $client = static::createClient( [], ['PHP_AUTH_USER' => 'admin', 'PHP_AUTH_PW' => 'password'] );
@@ -71,10 +103,10 @@ class TaskControllerTest extends WebTestCase
         $form = $crawler->selectButton('Supprimer')->last()->form();
         $client->submit($form);
 
+
         $crawler = $client->followRedirect();
         $this->assertEquals(200, $client->getResponse()->getStatusCode() );
         $this->assertTrue($client->getResponse()->isSuccessful(), 'Superbe ! La tâche a bien été supprimée.');
-
 
 
     }
