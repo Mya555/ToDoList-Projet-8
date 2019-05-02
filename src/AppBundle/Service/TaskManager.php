@@ -33,7 +33,7 @@ class TaskManager
 
     private function addFlash($key, $message)
     {
-        $this->session->getFlashBag( $key, $message );
+        $this->session->getFlashBag()->add( $key, $message );
     }
 
     public function toggleTask($task)
