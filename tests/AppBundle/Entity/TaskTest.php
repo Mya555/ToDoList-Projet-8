@@ -40,8 +40,9 @@ class TaskTest extends TestCase
 
     public function testTaskDate()
     {
-        $this->task->setCreatedAt( new DateTime() );
-        $this->assertEquals( $this->task->getCreatedAt(), new DateTime() );
+        $date = new DateTime();
+        $this->task->setCreatedAt($date );
+        $this->assertEquals( $this->task->getCreatedAt(), $date );
     }
 
     //all variables are  null at each end of the test so that the system memory is not overloaded

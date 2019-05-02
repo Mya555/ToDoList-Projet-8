@@ -3,7 +3,6 @@
 
 namespace Tests\AppBundle\Service;
 
-use AppBundle\Controller\TaskController;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Service\TaskManager;
@@ -11,7 +10,6 @@ use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
 
 
 class TaskManagerTest extends TestCase
@@ -20,6 +18,7 @@ class TaskManagerTest extends TestCase
     protected $task;
     protected $session;
     protected $taskManager;
+    protected $user;
 
     public function setUp()
     {
@@ -33,7 +32,9 @@ class TaskManagerTest extends TestCase
         $this->entityManager
             ->method( 'remove' )
             ->willReturn( true );
+
         $this->task = new Task();
+        $this->user = new User();
 
         $this->session = $this->createMock( Session::class );
         $this->session->method( 'getFlashBag' )
@@ -44,13 +45,14 @@ class TaskManagerTest extends TestCase
 
     public function tearDown()
     {
+        $this->user = null;
         $this->entityManager = null;
         $this->task = null;
         $this->session = null;
         $this->taskManager = null;
     }
 
-    public function testToggleTaskFlush()
+    public function testToggleTaskIsdone()
     {
         $this->task->toggle( true );
 
@@ -64,32 +66,34 @@ class TaskManagerTest extends TestCase
 
     public function testIfAddTaskTakeTheRightUser()
     {
-        $user = new User();
-        $this->taskManager->addTask( $this->task, $user );
-        $this->assertEquals( $user, $this->task->getUser() );
+        $this->taskManager->addTask( $this->task, $this->user );
+        $this->assertEquals( $this->user, $this->task->getUser() );
     }
 
-
-   /* public function testEditTask()
+    public function testEditTaskHasOnceFlushOnceGetflashbag()
     {
-        $controller = new TaskController();
-        $request = new Request();
+        $this->entityManager
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'flush' );
+        $this->session
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'getFlashBag' );
 
+        $this->taskManager->editTask();
+    }
 
-        $controller->editAction( $this->task, $request );
-
-
-    }*/
-
-    public function testDelete()
+    public function testDeleteIfOnceRemoveOnceFlush()
     {
-        $user = new User();
-        $user->setRoles( 'ROLE_ADMIN' );
-        $this->task->setUser( $user );
+        $this->user->setRoles( 'ROLE_ADMIN' );
+        $this->task->setUser( $this->user );
+
+        $this->entityManager
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'remove' );
+        $this->entityManager
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'flush' );
 
         $this->taskManager->deleteTask( $this->task );
-
-        // $this->assertSame( 0, $this->task );
-        $this->assertEquals( true, $this->taskManager->deleteTask( $this->task ) );
     }
 }
