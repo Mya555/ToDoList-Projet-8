@@ -62,7 +62,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         // 5 tasks without a user
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
-            $task->setTitle( 'Task with User ANONYME n° ' . $i );
+            $task->setTitle( 'Task - User - ANONYME n° ' . $i );
             $task->setContent( '
                 Icing liquorice liquorice I love chocolate cake tart
                 croissant chocolate sugar plum. 
@@ -74,7 +74,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         // 5 tasks attached to a user with ROLE_USER
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
-            $task->setTitle( 'Task with User with ROLE_USER n° ' . $i );
+            $task->setTitle( 'Task - User - ROLE_USER n° ' . $i );
             $task->setContent( '
                 Caramels I love biscuit jelly I love carrot cake gingerbread. 
                 I love sweet pudding ice cream topping oat cake sweet marzipan.
@@ -86,7 +86,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         // 5 tasks attached to a user with ROLE_ADMIN
         for ($i = 0; $i < 5; $i++) {
             $task = new Task();
-            $task->setTitle( 'Task with User with ROLE_ADMIN n° ' . $i );
+            $task->setTitle( 'Task - User - ROLE_ADMIN n° ' . $i );
             $task->setContent( '
                 pple pie bonbon marshmallow chupa chups liquorice sesame snaps 
                 I love pudding icing. Caramels danish brownie lemon drops icing. 
