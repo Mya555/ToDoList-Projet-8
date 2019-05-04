@@ -1,0 +1,116 @@
+
+### DECLARATIONS ###
+metrics:
+    user:
+        label: "UserManager"
+        matching_calls:
+            php:
+                - callee:
+                    selector: '=AppBundle\Service\UserManager::createUser'
+                    argument: {1: "^"} # Matches everything starting with the expression
+                - callee:
+                      selector: '=AppBundle\Service\UserManager::encryptPass'
+                      argument: {1: "^"}
+                - callee:
+                      selector: '=AppBundle\Service\UserManager::editUser'
+                      argument: {1: "^"}
+
+    task:
+        label: "TaskManager"
+        matching_calls:
+            php:
+                - callee:
+                      selector: '=AppBundle\Service\TaskManager::addFlash'
+                      argument: {1: "^"}
+                - callee:
+                      selector: '=AppBundle\Service\TaskManager::toggleTask'
+                      argument: {1: "^"}
+                - callee:
+                      selector: '=AppBundle\Service\TaskManager::addTask'
+                      argument: {1: "^"}
+                - callee:
+                      selector: '=AppBundle\Service\TaskManager::editTask'
+                      argument: {1: "^"}
+                - callee:
+                      selector: '=AppBundle\Service\TaskManager::deleteTask'
+                      argument: {1: "^"}
+
+
+### TESTS ###
+tests:
+#TESTS SUR LES SERVICES#
+
+    "UserManager":
+        path: "/.*"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count < 5 # no SQL statements executed
+            - main.peak_memory < 30mb         # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+            - metrics.user.count < 5
+            - metrics.user.wall_time < 20ms
+    "TaskManager":
+        path: "/.*"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count < 5 # no SQL statements executed
+            - main.peak_memory < 30mb         # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+            - metrics.task.count < 5
+            - metrics.task.wall_time < 20ms
+
+#TESTS SUR LES CONTROLLEURS#
+
+    "DefaultController":
+        path: "/"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count == 0 # no SQL statements executed
+            - main.peak_memory < 20mb         # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+    "TaskController":
+        path: "/.*"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count < 10 # 10 SQL statements executed
+            - main.peak_memory < 30mb         # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+
+    "UserController":
+        path: "/.*"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count < 10 # 10 SQL statements executed
+            - main.peak_memory < 30mb         # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+
+    "SecurityController":
+        path: "/.*"
+        assertions:
+            - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
+            - metrics.sql.queries.count < 10 # 10 SQL statements executed
+            - main.peak_memory < 30mb # memory does not exceed 10mb
+            - metrics.output.network_out < 100kb  # the response size is less than 100kb
+
+# Métriques de la performance fournies par défaut
+    "Toutes les pages sont rapides":
+        path: "/.*"
+        assertions:
+            - main.wall_time < 500ms
+            - main.memory < 20Mb
+    "Tests spécifiques à Symfony":
+        path: "/.*"
+        assertions:
+           # - metrics.symfony.kernel.debug.count == 0 # En mode production
+            - metrics.symfony.yaml.reads.count == 0 # Mise en cache du YAML
+            #- metrics.symfony.config_check.count == 0 # Pas de contrôle de méta-données Symfony
+    "Tests spécifiques à Twig":
+        path: "/.*"
+        assertions:
+            - metrics.twig.compile.count == 0 # Pas de compilation en production
+            - metrics.twig.attributes.get.count < 30 # Pas trop de logique dans les templates
+    "Tests de non régression":
+        path: "/.*"
+        assertions:
+            - percent(main.memory) < 10% # Contrôle de la consommation de mémoire
+            - diff(main.wall_time) < 0.1s # Contrôle du temps de chargement du script
