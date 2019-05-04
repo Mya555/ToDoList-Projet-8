@@ -31,7 +31,7 @@
 <h4> Code coverage :</h4>
 <pre><code>http://localhost/test-coverage/index.html</pre></code>
 
-<h4> - Execute phpunit test :</h4>
+<h4> Execute phpunit test :</h4>
 <pre><code>"./vendor/bin/phpunit</pre></code>
 
 <h1>Existing users</h1>
