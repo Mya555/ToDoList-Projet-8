@@ -5,9 +5,12 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
 use AppBundle\Form\TaskType;
+use AppBundle\Service\TaskManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class TaskController extends Controller
@@ -23,31 +26,44 @@ class TaskController extends Controller
         return $this->render( 'task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository( 'AppBundle:Task' )->findAll()] );
     }
 
+
+    /**
+     * @Route("/tasks/done", name="is_done_task")
+     */
+    public function IsDoneTask()
+    {
+        return $this->render( 'task/isDoneTask.html.twig', ['tasks' => $this->getDoctrine()->getRepository( 'AppBundle:Task' )->findAll()] );
+    }
+
+
     /**
      * @Route("/tasks/create", name="task_create")
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function createAction(Request $request)
     {
         $task = new Task();
         $form = $this->createForm( TaskType::class, $task );
         $form->handleRequest( $request );
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $task->setUser( $this->getUser() );
-            $em->persist( $task );
-            $em->flush();
-
-            $this->addFlash( 'success', 'La tâche a été bien été ajoutée.' );
-
+        if ($this->getUser() == !null) {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->get( 'app.task_manager' )->addTask( $task, $this->getUser() );
+                return $this->redirectToRoute( 'task_list' );
+            }
+        } else {
+            $this->addFlash( 'error', 'Connectez vous pour pouvoir créer une tâche.' );
             return $this->redirectToRoute( 'task_list' );
         }
-
         return $this->render( 'task/create.html.twig', ['form' => $form->createView()] );
     }
 
+
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
+     * @param Task $task
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function editAction(Task $task, Request $request)
     {
@@ -55,10 +71,9 @@ class TaskController extends Controller
 
         $form->handleRequest( $request );
 
-        if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->addFlash( 'success', 'La tâche a bien été modifiée.' );
+            $this->get( 'app.task_manager' )->editTask();
 
             return $this->redirectToRoute( 'task_list' );
         }
@@ -71,11 +86,14 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @param Task $task
+     * @return RedirectResponse
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle( !$task->isDone() );
-        $this->getDoctrine()->getManager()->flush();
+        $taskManager = $this->get( 'app.task_manager' );
+        $taskManager->toggleTask( $task );
+
 
         $this->addFlash( 'success', sprintf( 'La tâche %s a bien été marquée comme faite.', $task->getTitle() ) );
 
@@ -85,17 +103,13 @@ class TaskController extends Controller
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
      * @param Task $task
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function deleteTaskAction(Task $task)
     {
-        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme' )) {
+        if ($this->getUser() === $task->getUser() || ($this->get( 'security.authorization_checker' )->isGranted( 'ROLE_ADMIN' ) && $task->getUser()->getUsername() === 'anonyme')) {
 
-            $em = $this->getDoctrine()->getManager();
-            $em->remove( $task );
-            $em->flush();
-
-            $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
+            $this->get( 'app.task_manager' )->deleteTask( $task );
 
             return $this->redirectToRoute( 'task_list' );
 

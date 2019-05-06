@@ -23,18 +23,18 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-cache-bundle": "^1.2",
         "symfony/swiftmailer-bundle": "^2.3",
-        "symfony/monolog-bundle": "^2.8",
+        "symfony/monolog-bundle": "3.1",
         "symfony/polyfill-apcu": "^1.0",
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "^2.0",
         "twig/twig": "^2.7.4",
-        "phpunit/phpunit": "7.5.*"
+        "phpunit/phpunit": "7.5.*",
+        "symfony/phpunit-bridge": "^4.2"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.3",
-        "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^4.2"
+        "sensio/generator-bundle": "^3.0"
     },
     "scripts": {
         "symfony-scripts": [

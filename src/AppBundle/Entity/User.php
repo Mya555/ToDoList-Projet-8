@@ -24,11 +24,25 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 25,
+     *      minMessage = "Il faut plus de 3 caractères",
+     *      maxMessage = "C'est trop long, Il en faut moins de 25")
+     * @Assert\Regex(
+     *     pattern = "/^\S+$/",
+     *     message = "Les espaces blancs sont interdits")
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 64,
+     *      maxMessage = "Wow  mot de passe trop long",
+     *      minMessage = "Il faut plus de 6 caractères"
+     * )
      */
     private $password;
 
