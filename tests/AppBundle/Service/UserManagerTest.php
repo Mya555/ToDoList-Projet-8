@@ -8,7 +8,7 @@ use AppBundle\Entity\User;
 use AppBundle\Service\UserManager;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Tests\Functional\UserPasswordEncoderCommandTest;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 
@@ -37,7 +37,7 @@ class UserManagerTest extends TestCase
 
         $this->session = $this->createMock( Session::class );
 
-        $this->passwordEncoder = $this->createMock( PasswordEncoderInterface::class );
+        $this->passwordEncoder = $this->createMock( UserPasswordEncoder::class );
         $this->passwordEncoder->method( 'encodePassword' )->willReturn( 'test' );
 
         $this->userManager = new UserManager( $this->entityManager, $this->passwordEncoder, $this->session );
@@ -54,15 +54,18 @@ class UserManagerTest extends TestCase
 
         public function testUserPassAndEncryptPassAreSame()
         {
-            $this->userManager->encryptPass($this->user);
             $this->userManager->createUser($this->user);
             $this->assertEquals( $this->userManager->encryptPass($this->user), $this->user->getPassword());
         }
 
         public function testEditUser()
         {
-           $this->userManager->editUser($this->user);
-           self::assertEquals($this->user->getUsername(), $this->userManager->editUser($this->user->getUsername()));
+
+            $this->entityManager
+                ->expects( $this->exactly( 1 ) )
+                ->method( 'flush' );
+
+            $this->userManager->editUser( $this->user );
         }
 
 }

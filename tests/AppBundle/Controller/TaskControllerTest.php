@@ -84,7 +84,7 @@ class TaskControllerTest extends WebTestCase
         // EDIT TASK
 
         $crawler = $client->request('GET', '/tasks');
-        $link = $crawler->selectLink('Task with User ANONYME n° 1')->link();
+        $link = $crawler->selectLink('Task - User - ANONYME n° 1')->link();
         $crawler = $client->click($link);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
