@@ -19,6 +19,12 @@ class TaskTest extends TestCase
         $this->task = new Task();
     }
 
+    public function tearDown()//all variables are  null at each end of the test so that the system memory is not overloaded
+    {
+        $this->user = null;
+        $this->task = null;
+    }
+
     public function testTaskTitle()
     {
 
@@ -41,14 +47,7 @@ class TaskTest extends TestCase
     public function testTaskDate()
     {
         $date = new DateTime();
-        $this->task->setCreatedAt($date );
+        $this->task->setCreatedAt( $date );
         $this->assertEquals( $this->task->getCreatedAt(), $date );
-    }
-
-    //all variables are  null at each end of the test so that the system memory is not overloaded
-    public function tearDown()
-    {
-        $this->user = null;
-        $this->task = null;
     }
 }

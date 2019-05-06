@@ -52,20 +52,20 @@ class UserManagerTest extends TestCase
         $this->userManager = null;
     }
 
-        public function testUserPassAndEncryptPassAreSame()
-        {
-            $this->userManager->createUser($this->user);
-            $this->assertEquals( $this->userManager->encryptPass($this->user), $this->user->getPassword());
-        }
+    public function testUserPassAndEncryptPassAreSame()
+    {
+        $this->userManager->createUser( $this->user );
+        $this->assertEquals( $this->userManager->encryptPass( $this->user ), $this->user->getPassword() );
+    }
 
-        public function testEditUser()
-        {
+    public function testEditUser()
+    {
 
-            $this->entityManager
-                ->expects( $this->exactly( 1 ) )
-                ->method( 'flush' );
+        $this->entityManager
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'flush' );
 
-            $this->userManager->editUser( $this->user );
-        }
+        $this->userManager->editUser( $this->user );
+    }
 
 }

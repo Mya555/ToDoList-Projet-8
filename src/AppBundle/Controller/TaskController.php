@@ -15,9 +15,6 @@ use Symfony\Component\PropertyAccess\Exception\AccessException;
 
 class TaskController extends Controller
 {
-    private $tokenStorage;
-
-
     /**
      * @Route("/tasks", name="task_list")
      */

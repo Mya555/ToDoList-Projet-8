@@ -59,7 +59,7 @@ class User implements UserInterface
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
      */
     private $tasks;
 
@@ -78,7 +78,6 @@ class User implements UserInterface
     {
         $this->tasks = $tasks;
     }
-
 
 
     /**

@@ -32,12 +32,13 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
     /**
      * @param ObjectManager $manager
      */
-    public function load(ObjectManager $manager){
+    public function load(ObjectManager $manager)
+    {
 
         // Create user with role ROLE_ADMIN
         $user_admin = new User();
         $user_admin->setUsername( 'admin' );
-        $user_admin->setPassword($this->container->get('security.password_encoder')->encodePassword($user_admin, 'password' ));
+        $user_admin->setPassword( $this->container->get( 'security.password_encoder' )->encodePassword( $user_admin, 'password' ) );
         $user_admin->setEmail( 'admin@mail.fr' );
         $user_admin->setRoles( array('ROLE_ADMIN') );
         $manager->persist( $user_admin );
@@ -45,17 +46,19 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
         // Create user with role ROLE_USER
         $user_user = new User();
         $user_user->setUsername( 'user' );
-        $user_user->setPassword($this->container->get('security.password_encoder')->encodePassword($user_user, 'password' ) );
+        $user_user->setPassword( $this->container->get( 'security.password_encoder' )->encodePassword( $user_user, 'password' ) );
         $user_user->setEmail( 'user@mail.fr' );
         $user_user->setRoles( array('ROLE_USER') );
+
         $manager->persist( $user_user );
 
         // Create user with role ANONYME
         $user_anonyme = new User();
         $user_anonyme->setUsername( 'anonyme' );
-        $user_anonyme->setPassword($this->container->get('security.password_encoder')->encodePassword($user_user, 'password' ) );
+        $user_anonyme->setPassword( $this->container->get( 'security.password_encoder' )->encodePassword( $user_user, 'password' ) );
         $user_anonyme->setEmail( 'anonyme@mail.fr' );
         $user_anonyme->setRoles( array('ANONYME') );
+
         $manager->persist( $user_anonyme );
 
 
@@ -68,7 +71,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 croissant chocolate sugar plum. 
                 Danish sugar plum carrot cake chocolate bar chocolate bar carrot cake. 
                 I love macaroon pudding topping jelly cookie soufflé.' );
-            $task->setUser($user_anonyme );
+            $task->setUser( $user_anonyme );
             $manager->persist( $task );
         }
         // 5 tasks attached to a user with ROLE_USER
@@ -81,6 +84,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 Donut marshmallow donut dragée chocolate cake cake. Powder 
                 chocolate cake apple pie chupa chups biscuit I love chocolate cake.' );
             $task->setUser( $user_user );
+
             $manager->persist( $task );
         }
         // 5 tasks attached to a user with ROLE_ADMIN
@@ -92,6 +96,7 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
                 I love pudding icing. Caramels danish brownie lemon drops icing. 
                 Caramels I love liquorice caramels tart. Topping carrot cake danish tart.' );
             $task->setUser( $user_admin );
+
             $manager->persist( $task );
         }
 

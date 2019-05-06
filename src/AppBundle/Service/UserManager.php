@@ -41,11 +41,11 @@ class UserManager
     public function editUser($user)
     {
         $password = $this->encryptPass( $user );
-        $user->setPassword($password);
+        $user->setPassword( $password );
 
         $this->entityManager->flush();
 
-        $this->session->getFlashBag('success', "L'utilisateur a bien été modifié");
+        $this->session->getFlashBag( 'success', "L'utilisateur a bien été modifié" );
 
     }
 }

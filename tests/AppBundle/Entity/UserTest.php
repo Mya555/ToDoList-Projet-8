@@ -17,6 +17,11 @@ class UserTest extends TestCase
         $this->user = new User();
         $this->task = new Task();
     }
+    public function tearDown()
+    {
+        $this->user = null;
+        $this->task = null;
+    }
 
     public function testUserUsername()
     {
@@ -47,11 +52,4 @@ class UserTest extends TestCase
         $this->user->setTasks( $this->task );
         $this->assertEquals( $this->user->getTasks(), $this->task );
     }
-
-    public function tearDown()
-    {
-        $this->user = null;
-        $this->task = null;
-    }
-
 }
