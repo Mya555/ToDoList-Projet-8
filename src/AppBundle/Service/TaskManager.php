@@ -58,11 +58,9 @@ class TaskManager
 
     public function deleteTask($task)
     {
-
         $this->entityManager->remove( $task );
         $this->entityManager->flush();
 
         $this->addFlash( 'success', 'La tâche a bien été supprimée.' );
-
     }
 }

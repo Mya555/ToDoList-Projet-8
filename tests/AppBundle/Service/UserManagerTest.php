@@ -5,10 +5,12 @@ namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
+use AppBundle\Service\UserManager;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\SecurityBundle\Tests\Functional\UserPasswordEncoderCommandTest;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+
 
 class UserManagerTest extends TestCase
 {
@@ -16,25 +18,15 @@ class UserManagerTest extends TestCase
     protected $session;
     protected $passwordEncoder;
     protected $user;
+    protected $task;
+    protected $userManager;
+
 
     public function setUp()
     {
         $this->user = new User();
+        $this->task = new Task();
         $this->entityManager = $this->createMock( EntityManager::class );
-        $this->session = $this->createMock( Session::class );
-        $this->passwordEncoder = $this->createMock( PasswordEncoderInterface::class );
-    }
-
-    public function testPasswordEncoder()
-    {
-        $password = $this->passwordEncoder->encodePassword( $this->user, $this->user->getPassword() );
-
-        $this->assertEquals( $this->passwordEncoder->encodePassword( $this->user, $this->user->getPassword() ), $password );
-    }
-
-    public function testCreateUser()
-    {
-        $task = new Task();
         $this->entityManager
             ->method( 'persist' )
             ->willReturn( true );
@@ -43,37 +35,34 @@ class UserManagerTest extends TestCase
             ->method( 'flush' )
             ->willReturn( true );
 
-        $password = $this->passwordEncoder->encodePassword( $this->user, $this->user->getPassword() );
-        $this->user->setPassword( $password );
-        $this->entityManager->persist( $this->user );
-        $this->entityManager->flush();
+        $this->session = $this->createMock( Session::class );
 
-        $this->assertNotEquals( $this->user, $this->user->getPassword() );
-        $this->assertEquals( true, $this->entityManager->persist( $task ) );
-        $this->assertEquals( true, $this->entityManager->flush() );
+        $this->passwordEncoder = $this->createMock( PasswordEncoderInterface::class );
+        $this->passwordEncoder->method( 'encodePassword' )->willReturn( 'test' );
+
+        $this->userManager = new UserManager( $this->entityManager, $this->passwordEncoder, $this->session );
     }
-
-    public function testEditUser()
-    {
-        $this->entityManager
-            ->method( 'flush' )
-            ->willReturn( true );
-
-        $password = $this->passwordEncoder->encodePassword( $this->user, $this->user->getPassword() );
-        $this->user->setPassword( $password );
-
-        $this->entityManager->flush();
-
-        $this->assertNotEquals( $this->user, $this->user->setPassword( $password ) );
-        $this->assertEquals( true, $this->entityManager->flush() );
-
-    }
-
 
     public function tearDown()
     {
         $this->entityManager = null;
         $this->passwordEncoder = null;
         $this->session = null;
+        $this->user = null;
+        $this->userManager = null;
     }
+
+        public function testUserPassAndEncryptPassAreSame()
+        {
+            $this->userManager->encryptPass($this->user);
+            $this->userManager->createUser($this->user);
+            $this->assertEquals( $this->userManager->encryptPass($this->user), $this->user->getPassword());
+        }
+
+        public function testEditUser()
+        {
+           $this->userManager->editUser($this->user);
+           self::assertEquals($this->user->getUsername(), $this->userManager->editUser($this->user->getUsername()));
+        }
+
 }

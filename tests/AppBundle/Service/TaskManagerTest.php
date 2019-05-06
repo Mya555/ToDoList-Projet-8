@@ -87,6 +87,7 @@ class TaskManagerTest extends TestCase
         $this->user->setRoles( 'ROLE_ADMIN' );
         $this->task->setUser( $this->user );
 
+
         $this->entityManager
             ->expects( $this->exactly( 1 ) )
             ->method( 'remove' );
