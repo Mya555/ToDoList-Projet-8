@@ -27,7 +27,7 @@ class User implements UserInterface
      * @Assert\Length(
      *      min = 3,
      *      max = 25,
-     *      minMessage = "Il faut plus de 3 caractères",
+     *      minMessage = "Il faut au moins 3 caractères",
      *      maxMessage = "C'est trop long, Il en faut moins de 25")
      * @Assert\Regex(
      *     pattern = "/^\S+$/",
@@ -41,7 +41,7 @@ class User implements UserInterface
      *      min = 6,
      *      max = 64,
      *      maxMessage = "Wow  mot de passe trop long",
-     *      minMessage = "Il faut plus de 6 caractères"
+     *      minMessage = "Il faut au moins 6 caractères"
      * )
      */
     private $password;

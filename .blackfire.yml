@@ -93,17 +93,15 @@ tests:
             - metrics.output.network_out < 100kb  # the response size is less than 100kb
 
 # Métriques de la performance fournies par défaut
-    "Toutes les pages sont rapides":
+    "Le temps de chargement et la memoire consomé de l'application":
         path: "/.*"
         assertions:
-            - main.wall_time < 500ms
-            - main.memory < 20Mb
+            - main.wall_time < 700ms
+            - main.memory < 30Mb
     "Tests spécifiques à Symfony":
         path: "/.*"
         assertions:
-           # - metrics.symfony.kernel.debug.count == 0 # En mode production
             - metrics.symfony.yaml.reads.count == 0 # Mise en cache du YAML
-            #- metrics.symfony.config_check.count == 0 # Pas de contrôle de méta-données Symfony
     "Tests spécifiques à Twig":
         path: "/.*"
         assertions:
