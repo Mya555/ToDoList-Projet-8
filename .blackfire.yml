@@ -66,7 +66,7 @@ tests:
         assertions:
             - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
             - metrics.sql.queries.count == 0 # no SQL statements executed
-            - main.peak_memory < 20mb         # memory does not exceed 10mb
+            - main.peak_memory < 20mb         # memory does not exceed 20mb
             - metrics.output.network_out < 100kb  # the response size is less than 100kb
     "TaskController":
         path: "/.*"
@@ -81,7 +81,7 @@ tests:
         assertions:
             - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
             - metrics.sql.queries.count < 10 # 10 SQL statements executed
-            - main.peak_memory < 30mb         # memory does not exceed 10mb
+            - main.peak_memory < 30mb         # memory does not exceed 30mb
             - metrics.output.network_out < 100kb  # the response size is less than 100kb
 
     "SecurityController":
@@ -89,7 +89,7 @@ tests:
         assertions:
             - metrics.twig.attributes.get.count < 10 # Pas trop de logique dans les templates
             - metrics.sql.queries.count < 10 # 10 SQL statements executed
-            - main.peak_memory < 30mb # memory does not exceed 10mb
+            - main.peak_memory < 30mb # memory does not exceed 30mb
             - metrics.output.network_out < 100kb  # the response size is less than 100kb
 
 # Métriques de la performance fournies par défaut
